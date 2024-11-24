@@ -46,11 +46,12 @@ async def search_json(search: str, type: str, by: str):
     # first row is header
     for song in results[1:]:
         id_ = clean_text(song.find("td"))
+        if id_ == '검색결과를 찾을수 없습니다.':
+            return [{"title": "NOT FOUND"}]
         song_name_element = song.find("td", class_="left")
         song_name = clean_text(song_name_element)
         author_element = song_name_element.find_next_sibling("td")
         author = clean_text(author_element)
-        # Create the dictionary
 
         songs.append({
             "id": id_,
