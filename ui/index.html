@@ -81,7 +81,7 @@
         <div class="japanese-input">
             <label>Conversion:</label>
             <div class="radio-group">
-                <label><input type="radio" name="conversionType" value="romaji" checked> Romaji/English</label>
+                <label><input type="radio" name="conversionType" value="none" checked> None</label>
                 <label><input type="radio" name="conversionType" value="hiragana"> Hiragana</label>
                 <label><input type="radio" name="conversionType" value="katakana"> Katakana</label>
             </div>
@@ -139,8 +139,8 @@
             convertedText = wanakana.toHiragana(inputText);
         } else if (selectedConversion === 'katakana') {
             convertedText = wanakana.toKatakana(inputText);
-        } else if (selectedConversion === 'romaji') {
-            convertedText = wanakana.toRomaji(inputText);
+        } else if (selectedConversion === 'none') {
+            convertedText = inputText;
         }
 
         conversionOutput.textContent = `Output: ${convertedText}`;
