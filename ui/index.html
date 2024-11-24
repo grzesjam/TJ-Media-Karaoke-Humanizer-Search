@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ Media Humanizer - Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>TJ Media Humanizer Search</h1>
+    <form id="searchForm">
+        <div>
+            <label for="searchInput">Author / Title:</label>
+            <input type="text" id="searchInput" name="search" placeholder="Enter author or title" required>
+        </div>
+        <div>
+            <label for="typeSelect">Genre:</label>
+            <select id="typeSelect" name="type">
+                <option value="">Country(??)</option>
+                <option value="KOR" >Korean</option>
+                <option value="ENG" >POP (english?)</option>
+                <option value="JPN" selected>Japanese</option>
+                <option value="CHN" >Chinese</option>
+                <option value="PHL" >Philipinese</option>
+                <option value="VET" >Vietnamese</option>
+                <option value="RUS" >Russian</option>
+                <option value="THA" >Thai</option>
+                <option value="INS" >Indonesian</option>
+                <option value="ESP" >Spanish</option>
+                <option value="YAN" >YAN(??)</option>
+            </select>
+        </div>
+        <div>
+            <label for="bySelect">Search BY:</label>
+            <select id="bySelect" name="by">
+                <option value="1">Title</option>
+                <option value="2">Artist</option>
+            </select>
+        </div>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const searchInput = document.getElementById('searchInput').value;
+        const typeSelect = document.getElementById('typeSelect').value;
+        const bySelect = document.getElementById('bySelect').value;
+        const searchUrl = `/search?search=${encodeURIComponent(searchInput)}&type=${encodeURIComponent(typeSelect)}&by=${encodeURIComponent(bySelect)}`;
+        window.location.href = searchUrl;
+    });
+</script>
+</body>
+</html>
+

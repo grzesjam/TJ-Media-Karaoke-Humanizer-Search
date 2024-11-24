@@ -1,0 +1,8 @@
+fastapi[standard]
+jinja2
+beautifulsoup4
+requests
+cutlet
+unidic-lite
+yt_dlp
+joblib

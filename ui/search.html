@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .lyrics {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+<table id="resultsTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Title (Romaji)</th>
+        <th>Author</th>
+        <th>Author (Romaji)</th>
+        <th>Album Cover</th>
+        <th>YouTube Link</th>
+        <th>Lyrics</th>
+    </tr>
+    </thead>
+    <tbody id="resultsBody">
+    <!-- Results will be inserted here -->
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const search = urlParams.get('search') || '';
+        const type = urlParams.get('type') || '';
+        const by = urlParams.get('by') || '';
+
+        // Fetch data from the API
+        fetch(`/api/search?search=${encodeURIComponent(search)}&type=${encodeURIComponent(type)}&by=${encodeURIComponent(by)}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('resultsBody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.title}</td>
+                            <td>${item.title_romaji}</td>
+                            <td>${item.author}</td>
+                            <td>${item.author_romaji}</td>
+                            <td><img src="/placeholder.svg" alt="Loading..." data-song="${item.author}-${item.title}" /></td>
+                            <td><a href="${item.youtube_link}" target="_blank">Watch on YouTube</a></td>
+                            <td><a href="${item.lyrics}" target="_blank">Search for Lyrics</a></td>
+                        `;
+                    tbody.appendChild(row);
+                });
+                // After adding all rows, fetch album covers
+                fetchAlbumCovers();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                const tbody = document.getElementById('resultsBody');
+                tbody.innerHTML = '<tr><td colspan="8">Error loading data. Please try again later.</td></tr>';
+            });
+    });
+
+    function fetchAlbumCovers() {
+        const coverImages = document.querySelectorAll('img[data-song]');
+        coverImages.forEach(img => {
+            const songName = img.getAttribute('data-song');
+            fetch(`/api/song_cover?song_name=${songName}`)
+                .then(response => response.json())
+                .then(data => {
+                    img.src = data.url;
+                    img.alt = 'Album Cover';
+                })
+                .catch(error => {
+                    console.error('Error fetching album cover:', error);
+                    img.alt = 'Cover not available';
+                });
+        });
+    }
+</script>
+</body>
+</html>
+
