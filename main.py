@@ -11,7 +11,7 @@ app = FastAPI()
 katsu = cutlet.Cutlet()
 templates = Jinja2Templates(directory="./ui/")
 ydl_opts = {
-    'quiet': False,  # Suppress verbose output
+    'quiet': True,  # Suppress verbose output
     'skip_download': True,  # Don't download video/audio
     'format': 'best',  # Specify format (not used for metadata fetch)
     'default_search': 'auto',  # Search and fetch the first result
