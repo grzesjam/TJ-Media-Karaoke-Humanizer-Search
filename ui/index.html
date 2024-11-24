@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TJ Media Humanizer - Search</title>
+    <script src="https://unpkg.com/wanakana"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,6 +22,8 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
         }
         h1 {
             text-align: center;
@@ -54,6 +57,17 @@
         button:hover {
             background-color: #0056b3;
         }
+        .japanese-input {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .radio-group {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -64,21 +78,30 @@
             <label for="searchInput">Author / Title:</label>
             <input type="text" id="searchInput" name="search" placeholder="Enter author or title" required>
         </div>
+        <div class="japanese-input">
+            <label>Conversion:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="conversionType" value="romaji" checked> Romaji/English</label>
+                <label><input type="radio" name="conversionType" value="hiragana"> Hiragana</label>
+                <label><input type="radio" name="conversionType" value="katakana"> Katakana</label>
+            </div>
+            <div id="conversionOutput">Output: </div>
+        </div>
         <div>
             <label for="typeSelect">Genre:</label>
             <select id="typeSelect" name="type">
                 <option value="">Country(??)</option>
-                <option value="KOR" >Korean</option>
-                <option value="ENG" >POP (english?)</option>
+                <option value="KOR">Korean</option>
+                <option value="ENG">POP (english?)</option>
                 <option value="JPN" selected>Japanese</option>
-                <option value="CHN" >Chinese</option>
-                <option value="PHL" >Philipinese</option>
-                <option value="VET" >Vietnamese</option>
-                <option value="RUS" >Russian</option>
-                <option value="THA" >Thai</option>
-                <option value="INS" >Indonesian</option>
-                <option value="ESP" >Spanish</option>
-                <option value="YAN" >YAN(??)</option>
+                <option value="CHN">Chinese</option>
+                <option value="PHL">Philipinese</option>
+                <option value="VET">Vietnamese</option>
+                <option value="RUS">Russian</option>
+                <option value="THA">Thai</option>
+                <option value="INS">Indonesian</option>
+                <option value="ESP">Spanish</option>
+                <option value="YAN">YAN(??)</option>
             </select>
         </div>
         <div>
@@ -93,15 +116,45 @@
 </div>
 
 <script>
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
+    const searchInput = document.getElementById('searchInput');
+    const conversionOutput = document.getElementById('conversionOutput');
+    const conversionRadios = document.getElementsByName('conversionType');
+    const searchForm = document.getElementById('searchForm');
+
+    let convertedText = "";
+
+    // Listen to input changes on the text field
+    searchInput.addEventListener('input', updateConversion);
+
+    // Listen to radio button changes
+    conversionRadios.forEach(radio => {
+        radio.addEventListener('change', updateConversion);
+    });
+
+    function updateConversion() {
+        const inputText = searchInput.value;
+        const selectedConversion = Array.from(conversionRadios).find(radio => radio.checked).value;
+
+        if (selectedConversion === 'hiragana') {
+            convertedText = wanakana.toHiragana(inputText);
+        } else if (selectedConversion === 'katakana') {
+            convertedText = wanakana.toKatakana(inputText);
+        } else if (selectedConversion === 'romaji') {
+            convertedText = wanakana.toRomaji(inputText);
+        }
+
+        conversionOutput.textContent = `Output: ${convertedText}`;
+    }
+
+    // Update the form submission to use the converted value
+    searchForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const searchInput = document.getElementById('searchInput').value;
         const typeSelect = document.getElementById('typeSelect').value;
         const bySelect = document.getElementById('bySelect').value;
-        const searchUrl = `/search?search=${encodeURIComponent(searchInput)}&type=${encodeURIComponent(typeSelect)}&by=${encodeURIComponent(bySelect)}`;
+
+        const searchUrl = `/search?search=${encodeURIComponent(convertedText)}&type=${encodeURIComponent(typeSelect)}&by=${encodeURIComponent(bySelect)}`;
         window.location.href = searchUrl;
     });
 </script>
 </body>
 </html>
-
