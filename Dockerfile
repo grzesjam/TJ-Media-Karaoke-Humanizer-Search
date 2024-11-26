@@ -14,4 +14,4 @@ RUN mkdir /app/cache
 RUN chown -R worker:worker /app/cache
 USER worker
 
-ENTRYPOINT fastapi run
+ENTRYPOINT fastapi --workers 6 run
